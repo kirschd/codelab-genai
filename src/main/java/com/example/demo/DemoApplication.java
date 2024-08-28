@@ -1,6 +1,9 @@
 package com.example.demo;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,6 +30,8 @@ public class DemoApplication {
 @RestController
 class HelloController {
 
+    final Logger logger = Logger.getLogger(DemoApplication.class.getName());
+
     String projectId = ServiceOptions.getDefaultProjectId();
 
     @GetMapping("/")
@@ -37,6 +42,13 @@ class HelloController {
         GenerativeModel model = new GenerativeModel("gemini-1.5-flash", vertexAI);
 
         GenerateContentResponse response = model.generateContent(prompt);
+        logger.log(Level.INFO, "Content is generated",
+            new HashMap<String, Object>() {
+                {
+                    put("prompt", prompt);
+                    put("response", response);
+                }
+            });
         return ResponseHandler.getText(response);
     }
 
